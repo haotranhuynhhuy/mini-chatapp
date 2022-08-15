@@ -3,6 +3,7 @@ import Chats from "./components/ChatRoom";
 import Login from "./components/Login";
 import AddRoomModal from "./components/Modal/AddRoomModal";
 import InviteMember from "./components/Modal/InviteMember";
+import SendImageModal from "./components/Modal/SendImageModal";
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
       </Switch>
       <AddRoomModal />
       <InviteMember />
+      <SendImageModal/>
     </>
 
   );

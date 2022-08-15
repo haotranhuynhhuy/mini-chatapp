@@ -24,7 +24,8 @@ const useFirestore = (collection, condition) => {
                 id: doc.id
             }))
             setRooms(rooms);
-        })
+        });
+
         return unsubsribe;
     }, [collection, condition]);
     return rooms;

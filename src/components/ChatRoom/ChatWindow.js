@@ -1,6 +1,6 @@
-import { UserAddOutlined } from '@ant-design/icons'
-import { Avatar, Button, Form, Tooltip, Input, Alert } from 'antd'
-import React, { useContext, useMemo, useState } from 'react'
+import { PlusCircleOutlined, UserAddOutlined } from '@ant-design/icons'
+import { Avatar, Button, Form, Tooltip, Input, Alert} from 'antd'
+import React, { useContext,  useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { AppContext } from '../../Context/AppProvider'
 import { AuthContext } from '../../Context/AuthProvider'
@@ -53,6 +53,7 @@ const FormStyled = styled(Form)`
         flex: 1;
         margin-bottom: 0;
     }
+
 `
 const MessageStyled = styled.div`
     max-height: 100%;
@@ -61,37 +62,65 @@ const MessageStyled = styled.div`
 const WrappedStyled = styled.div`
     height: 100vh;
 `
+const InputStyled = styled.div`
+    display: flex;
+    .custom-file-input {
+        max-width: 50px;
+      }
+      .custom-file-input::-webkit-file-upload-button {
+        visibility: hidden;
+      }
+      .custom-file-input::before {
+        content: 'file';
+        display: inline-block;
+        text-align: 'center';
+        outline: none;
+        cursor: pointer;
+        text-shadow: 1px 1px #fff;
+        font-weight: 700;
+        font-size: 10pt;
+      }
+      .custom-file-input:hover::before {
+        border-color: black;
+      }
+      .custom-file-input:active::before {
+        background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+      }
+`
 const ChatWindow = () => {
-    const { selectedRoom, members, setIsInviteVisibleModal } = useContext(AppContext);
+    const { selectedRoom, members, setIsInviteVisibleModal, setIsImageVisibleModal } = useContext(AppContext);
     const user = useContext(AuthContext);
 
     const [form] = Form.useForm();
-    const [inputValue, setInputValue] = useState('')
-    const handleInputChange = (e) =>{
+    const [inputValue, setInputValue] = useState('');
+
+    const handleInputChange = (e) => {
         setInputValue(e.target.value)
     }
-    const handleSubmit = () =>{
-        addDocument('messages',{
-            text: inputValue,
-            uid: user.uid,
-            photoURL: user.photoURL,
-            roomId: selectedRoom.id,
-            displayName: user.displayName
-        })
-
+    const handleSubmit = () => {
+        if (inputValue.trim().length > 0) {
+            addDocument('messages', {
+                text: inputValue,
+                uid: user.uid,
+                photoURL: user.photoURL,
+                roomId: selectedRoom.id,
+                displayName: user.displayName
+            })
+        }
+        
         form.resetFields(['messages']);
     }
-    
-    const messagesCondition = useMemo(()=>{
+
+    const messagesCondition = useMemo(() => {
         return {
             fieldName: 'roomId',
             operator: '==',
             compareValue: selectedRoom.id
         }
-    },[selectedRoom.id])
+    }, [selectedRoom.id])
 
-    const messages = useFirestore('messages',messagesCondition);
-    console.log(messages);
+    const messages = useFirestore('messages', messagesCondition);
+
     return (
         <WrappedStyled>
             {
@@ -127,30 +156,43 @@ const ChatWindow = () => {
 
                         <ContentStyled>
                             <MessageStyled>
-                               {
-                                messages.map(message=>{
-                                    return(
-                                        <Message 
-                                        key={message.id}
-                                        text={message.text}
-                                        displayName= {message.displayName}
-                                        photoURL={message.photoURL}
-                                        createAt={message.createAt}
-                                        />
-                                    )
-                                })
-                               }
+                                {
+                                    messages.map(message => {
+                                        return (
+                                            <Message
+                                                key={message.id}
+                                                text={message.text}
+                                                displayName={message.displayName}
+                                                photoURL={message.photoURL}
+                                                createAt={message.createAt}
+                                                image = {message.imageUrl}
+                                                uid={message.uid}
+                                            />
+                                        )
+                                    })
+                                }
+                               
                             </MessageStyled>
-                            <FormStyled form={form} name='messages'>
-                                <Form.Item>
-                                    <Input 
-                                    bordered={false} 
-                                    autoComplete='off' 
-                                    onChange={handleInputChange}
-                                    onPressEnter={handleSubmit}
+                            <FormStyled form={form} >
+                                <Form.Item name='messages'>
+                                    <Input
+                                        bordered={false}
+                                        autoComplete='off'
+                                        onChange={handleInputChange}
+                                        onPressEnter={handleSubmit}
                                     />
                                 </Form.Item>
-                                <Button type='primary' onClick={handleSubmit}>Send</Button>
+                                <InputStyled>
+                                <Button
+                                    icon={<PlusCircleOutlined />}
+                                    type='text'
+                                    onClick={() => setIsImageVisibleModal(true)}
+                                />
+
+                                    <Button
+                                        type='primary'
+                                        onClick={handleSubmit}>Send</Button>
+                                </InputStyled>
                             </FormStyled>
                         </ContentStyled>
                     </>
