@@ -1,6 +1,6 @@
 import { PlusCircleOutlined, UserAddOutlined } from '@ant-design/icons'
-import { Avatar, Button, Form, Tooltip, Input, Alert} from 'antd'
-import React, { useContext,  useMemo, useState } from 'react'
+import { Avatar, Button, Form, Tooltip, Input, Alert } from 'antd'
+import React, { useContext, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { AppContext } from '../../Context/AppProvider'
 import { AuthContext } from '../../Context/AuthProvider'
@@ -107,17 +107,16 @@ const ChatWindow = () => {
                 displayName: user.displayName
             })
         }
-        
+
         form.resetFields(['messages']);
     }
 
-    const messagesCondition = useMemo(() => {
-        return {
-            fieldName: 'roomId',
-            operator: '==',
-            compareValue: selectedRoom.id
-        }
-    }, [selectedRoom.id])
+    // onSnapshot tin nhắn theo room
+    const messagesCondition = useMemo(() => ({
+        fieldName: 'roomId',
+        operator: '==',
+        compareValue: selectedRoom.id
+    }), [selectedRoom.id])
 
     const messages = useFirestore('messages', messagesCondition);
 
@@ -165,13 +164,13 @@ const ChatWindow = () => {
                                                 displayName={message.displayName}
                                                 photoURL={message.photoURL}
                                                 createAt={message.createAt}
-                                                image = {message.imageUrl}
+                                                image={message.imageUrl}
                                                 uid={message.uid}
                                             />
                                         )
                                     })
                                 }
-                               
+
                             </MessageStyled>
                             <FormStyled form={form} >
                                 <Form.Item name='messages'>
@@ -183,11 +182,11 @@ const ChatWindow = () => {
                                     />
                                 </Form.Item>
                                 <InputStyled>
-                                <Button
-                                    icon={<PlusCircleOutlined />}
-                                    type='text'
-                                    onClick={() => setIsImageVisibleModal(true)}
-                                />
+                                    <Button
+                                        icon={<PlusCircleOutlined />}
+                                        type='text'
+                                        onClick={() => setIsImageVisibleModal(true)}
+                                    />
 
                                     <Button
                                         type='primary'

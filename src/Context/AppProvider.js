@@ -7,7 +7,7 @@ const AppProvider = ({ children }) => {
     const [isVisibleModal, setIsVisibleModal] = useState(false);
     const [isInviteVisibleModal, setIsInviteVisibleModal] = useState(false);
     const [isImageVisibleModal, setIsImageVisibleModal] = useState(false);
-    const [selectedRoomId, setSelectedRoomId] = useState('')
+    const [selectedRoomId, setSelectedRoomId] = useState('');
     const user = useContext(AuthContext);
 
     const roomCondition = useMemo(() => {
