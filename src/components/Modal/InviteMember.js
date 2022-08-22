@@ -7,7 +7,7 @@ import { db } from '../firebase/config';
 
 function DebounceSelect({
     fetchOptions,
-    debounceTimeout = 700,
+    debounceTimeout = 300,
     curMembers,
     ...props
 }) {
@@ -22,14 +22,14 @@ function DebounceSelect({
             setOptions([]);
             setFetching(true);
 
-            fetchOptions(value, props.curMembers).then((newOptions) => {
+            fetchOptions(value, curMembers).then((newOptions) => {
                 setOptions(newOptions);
                 setFetching(false);
             });
         };
 
         return debounce(loadOptions, debounceTimeout);
-    }, [debounceTimeout, fetchOptions, props.curMembers]);
+    }, [debounceTimeout, fetchOptions, curMembers]);
 
     useEffect(() => {
         return () => {
@@ -63,7 +63,7 @@ function DebounceSelect({
     );
 }
 
-const fetchUserList = async (search, curMembers) => {
+async function fetchUserList(search, curMembers) {
     return db.collection('users')
         .where('keywords', 'array-contains', search.toLowerCase())
         .orderBy('displayName')

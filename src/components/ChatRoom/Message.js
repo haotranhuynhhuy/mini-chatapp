@@ -1,4 +1,4 @@
-import { Avatar, Typography } from 'antd'
+import { Avatar, Image, Typography} from 'antd'
 import { formatRelative } from 'date-fns'
 import React from 'react'
 import styled from 'styled-components'
@@ -31,18 +31,19 @@ const formatDate = (seconds) =>{
     return formatDate;
 }
 
-const Message = ({ text, displayName, photoURL, createAt }) => {
+const Message = ({ text, displayName, photoURL, createAt, image}) => {
     return (
         <WrapperStyled>
-            <div>
-                <Avatar size={'small'} src={photoURL}>{photoURL? '' : displayName.charAt(0).toUpperCase()}</Avatar>
-                <Typography.Text className='displayName'>{displayName}</Typography.Text>
-                <Typography.Text className='createAt'>{formatDate(createAt?.seconds)}</Typography.Text>
-            </div>
-            <div>
-                <Typography.Text className='content'>{text}</Typography.Text>
-            </div>
-        </WrapperStyled>
+        <div>
+            <Avatar size={'small'} src={photoURL}>{photoURL? '' : displayName.charAt(0).toUpperCase()}</Avatar>
+            <Typography.Text className='displayName'>{displayName}</Typography.Text>
+            <Typography.Text className='createAt'>{formatDate(createAt?.seconds)}</Typography.Text>
+        </div>
+        <div>
+            <Typography.Text className='content'>{text? text : <Image src={image} width={200} />}</Typography.Text>
+        </div>
+    </WrapperStyled>
+       
     )
 }
 

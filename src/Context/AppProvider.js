@@ -6,18 +6,21 @@ export const AppContext = createContext();
 const AppProvider = ({ children }) => {
     const [isVisibleModal, setIsVisibleModal] = useState(false);
     const [isInviteVisibleModal, setIsInviteVisibleModal] = useState(false);
-    const [selectedRoomId, setSelectedRoomId] = useState('')
-    
+    const [isImageVisibleModal, setIsImageVisibleModal] = useState(false);
+    const [selectedRoomId, setSelectedRoomId] = useState('');
     const user = useContext(AuthContext);
+
     const roomCondition = useMemo(() => {
         return {
             fieldName: 'members',
             operator: 'array-contains',
-            compareValue: user.uid
+            compareValue: user.uid,
         }
-    }, [user.uid])
+    }, [user.uid]);
+
     const rooms = useFirestore('rooms', roomCondition);
-    
+
+
     const selectedRoom = useMemo(
         () => rooms.find(item => item.id === selectedRoomId) || {}
         , [selectedRoomId, rooms]);
@@ -30,7 +33,10 @@ const AppProvider = ({ children }) => {
         }
     }, [ selectedRoom.members])
 
-    const members = useFirestore('users', userCondition)
+    const members = useFirestore('users', userCondition);
+
+
+
     return (
         <AppContext.Provider
             value={{
@@ -42,7 +48,9 @@ const AppProvider = ({ children }) => {
                 selectedRoomId,
                 setSelectedRoomId,
                 isInviteVisibleModal, 
-                setIsInviteVisibleModal
+                setIsInviteVisibleModal,
+                isImageVisibleModal, 
+                setIsImageVisibleModal
             }} >
             {children}
         </AppContext.Provider>

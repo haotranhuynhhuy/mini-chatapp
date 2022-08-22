@@ -17,8 +17,8 @@ const WrapperStyled = styled.div`
 `;
 const UserInfor = () => {
 
-    const data = useContext(AuthContext);
-    const {displayName, photoURL } = data;
+    const user = useContext(AuthContext);
+    const {displayName, photoURL } = user;
     return (
         <WrapperStyled>
                 <div>
