@@ -1,6 +1,6 @@
 import { PlusCircleOutlined, UserAddOutlined } from '@ant-design/icons'
 import { Avatar, Button, Form, Tooltip, Input, Alert } from 'antd'
-import React, { useContext, useMemo, useState } from 'react'
+import React, { useContext, useMemo, useState, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import { AppContext } from '../../Context/AppProvider'
 import { AuthContext } from '../../Context/AuthProvider'
@@ -88,6 +88,7 @@ const InputStyled = styled.div`
       }
 `
 const ChatWindow = () => {
+    const messageEndRef = useRef(null);
     const { selectedRoom, members, setIsInviteVisibleModal, setIsImageVisibleModal } = useContext(AppContext);
     const user = useContext(AuthContext);
 
@@ -97,9 +98,10 @@ const ChatWindow = () => {
     const handleInputChange = (e) => {
         setInputValue(e.target.value)
     }
+
     const handleSubmit = () => {
         if (inputValue.trim().length > 0) {
-            addDocument('messages', {
+           addDocument('messages', {
                 text: inputValue,
                 uid: user.uid,
                 photoURL: user.photoURL,
@@ -107,9 +109,9 @@ const ChatWindow = () => {
                 displayName: user.displayName
             })
         }
-
         form.resetFields(['messages']);
     }
+    
 
     // onSnapshot tin nhắn theo room
     const messagesCondition = useMemo(() => ({
@@ -119,6 +121,14 @@ const ChatWindow = () => {
     }), [selectedRoom.id])
 
     const messages = useFirestore('messages', messagesCondition);
+
+    //scroll tin nhắn mới nhất
+    const scrollToBottom = () =>{
+        messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+    useEffect(()=>{
+        scrollToBottom();
+    },[messages])
 
     return (
         <WrappedStyled>
@@ -170,7 +180,7 @@ const ChatWindow = () => {
                                         )
                                     })
                                 }
-
+                                <div ref={messageEndRef}></div>
                             </MessageStyled>
                             <FormStyled form={form} >
                                 <Form.Item name='messages'>

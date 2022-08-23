@@ -23,7 +23,6 @@ const useFirestore = (collection, condition = {}) => {
                 ...doc.data(),
                 id: doc.id
             }))
-            console.log(rooms);
             setData(rooms);
         });
 
